@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#005C8C">
+    <title>Data Comparison - Compare & Analyze</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header comparison-header">
+            <div class="header-content">
+                <div class="header-back">
+                    <button type="button" class="btn-back" onclick="goHome()">← Back to Modules</button>
+                </div>
+                <h1 id="moduleTitle">📊 Data Comparison</h1>
+                <p id="moduleSubtitle">Upload and compare SAP and SFDC data</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="upload-container">
+                    <div class="upload-box" id="uploadBox1">
+                        <input type="file" id="file1" accept=".csv" hidden>
+                        <div class="upload-placeholder">
+                            <span class="upload-icon">📊</span>
+                            <h3 id="sapFileLabel">Upload SAP File</h3>
+                            <p>Drag & drop your SAP CSV file here</p>
+                            <button type="button" class="btn-secondary" onclick="document.getElementById('file1').click()">
+                                Choose File
+                            </button>
+                            <span class="file-name" id="fileName1"></span>
+                        </div>
+                    </div>
+
+                    <div class="divider">
+                        <span class="divider-text">VS</span>
+                    </div>
+
+                    <div class="upload-box" id="uploadBox2">
+                        <input type="file" id="file2" accept=".csv" hidden>
+                        <div class="upload-placeholder">
+                            <span class="upload-icon">☁️</span>
+                            <h3 id="sfdcFileLabel">Upload SFDC File</h3>
+                            <p>Drag & drop your SFDC CSV file here</p>
+                            <button type="button" class="btn-secondary" onclick="document.getElementById('file2').click()">
+                                Choose File
+                            </button>
+                            <span class="file-name" id="fileName2"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration -->
+                <div class="config-section">
+                    <div class="form-group">
+                        <label for="keyColumn">Key Column for Matching:</label>
+                        <select id="keyColumn" disabled>
+                            <option value="">Select a column...</option>
+                        </select>
+                        <small>This column will be used to match records between files</small>
+                    </div>
+
+                    <button type="button" id="compareBtn" class="btn-primary btn-large" disabled>
+                        🔍 Compare Files
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results Section (Hidden Initially) -->
+            <section id="resultsSection" class="results-section" style="display: none;">
+                <!-- KPI Summary Cards -->
+                <div class="kpi-section">
+                    <h2>Key Performance Indicators <span id="comparisonDateRange" class="date-range"></span></h2>
+                    <div class="kpi-cards">
+                        <div class="kpi-card kpi-sap">
+                            <div class="kpi-icon">📊</div>
+                            <div class="kpi-content">
+                                <h3>Total SAP Records</h3>
+                                <p class="kpi-value" id="totalSapRecords">0</p>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card kpi-sfdc">
+                            <div class="kpi-icon">☁️</div>
+                            <div class="kpi-content">
+                                <h3>Total SFDC Records</h3>
+                                <p class="kpi-value" id="totalSfdcRecords">0</p>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card kpi-record-diff">
+                            <div class="kpi-icon">🔁</div>
+                            <div class="kpi-content">
+                                <h3>Record Difference</h3>
+                                <p class="kpi-value" id="recordDifferenceKpi">0</p>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card kpi-matched">
+                            <div class="kpi-icon">✅</div>
+                            <div class="kpi-content">
+                                <h3>Matched Records</h3>
+                                <p class="kpi-value" id="matchedKpiRecords">0</p>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card kpi-quantity">
+                            <div class="kpi-icon">📊</div>
+                            <div class="kpi-content">
+                                <h3>Match Percentage - Quantity</h3>
+                                <div class="kpi-percentage-wrapper">
+                                    <p class="kpi-value kpi-green" id="quantityMatchPercentageKpi">0%</p>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="quantityProgressFill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card kpi-percentage">
+                            <div class="kpi-icon">📈</div>
+                            <div class="kpi-content">
+                                <h3>Match Percentage - Quality</h3>
+                                <div class="kpi-percentage-wrapper">
+                                    <p class="kpi-value kpi-green" id="matchPercentageKpi">0%</p>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Missing and Extra Records Section -->
+                <div class="missing-extra-section">
+                    <h2>Missing and Extra Records</h2>
+                    <div class="missing-extra-cards">
+                        <div class="card card-missing-sap" onclick="openModal('missing_sap')">
+                            <div class="card-icon">⚠️</div>
+                            <div class="card-content">
+                                <h3>Missing in SAP</h3>
+                                <p class="card-value" id="missingSapRecords">0</p>
+                                <small>Records in SFDC but not in SAP</small>
+                            </div>
+                            <div class="card-arrow">→</div>
+                        </div>
+
+                        <div class="card card-missing-sfdc" onclick="openModal('missing_sfdc')">
+                            <div class="card-icon">⚠️</div>
+                            <div class="card-content">
+                                <h3>Missing in SFDC</h3>
+                                <p class="card-value" id="missingSfdcRecords">0</p>
+                                <small>Records in SAP but not in SFDC</small>
+                            </div>
+                            <div class="card-arrow">→</div>
+                        </div>
+
+                        <div class="card card-mismatches" onclick="openModal('mismatches')">
+                            <div class="card-icon">❌</div>
+                            <div class="card-content">
+                                <h3>Mismatched Records</h3>
+                                <p class="card-value" id="mismatchedRecords">0</p>
+                                <small>Records exist in both but data differs</small>
+                            </div>
+                            <div class="card-arrow">→</div>
+                        </div>
+
+                        <div class="card card-matches" onclick="openModal('matches')">
+                            <div class="card-icon">✅</div>
+                            <div class="card-content">
+                                <h3>Perfect Matches</h3>
+                                <p class="card-value" id="perfectMatches">0</p>
+                                <small>Records match completely</small>
+                            </div>
+                            <div class="card-arrow">→</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Table -->
+                <div class="table-section">
+                    <div class="table-header">
+                        <h2>Field-Level Comparison</h2>
+                        <div class="table-controls">
+                            <input type="text" id="searchTable" placeholder="Search fields..." class="search-input">
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table id="comparisonTable" class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Field Name</th>
+                                    <th>Total Records</th>
+                                    <th>Matching</th>
+                                    <th>Non-Matching</th>
+                                    <th>Match %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Export Section -->
+                <div class="export-section">
+                    <h3>Export Results</h3>
+                    <div class="export-buttons">
+                        <button type="button" class="btn-export btn-excel" onclick="exportToExcel()">
+                            📊 Export to Excel
+                        </button>
+                        <button type="button" class="btn-export btn-csv" onclick="exportToCSV()">
+                            📄 Export to CSV
+                        </button>
+                        <button type="button" class="btn-export btn-json" onclick="exportToJSON()">
+                            📋 Export to JSON
+                        </button>
+                    </div>
+                </div>
+
+                <!-- New Comparison Button -->
+                <div class="action-buttons">
+                    <button type="button" class="btn-secondary btn-large" onclick="resetForm()">
+                        🔄 Compare Different Files
+                    </button>
+                    <button type="button" class="btn-secondary btn-large" onclick="goHome()">
+                        🏠 Back to Modules
+                    </button>
+                </div>
+            </section>
+
+            <!-- Alert Messages -->
+            <div id="alertContainer" class="alert-container"></div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner"></div>
+        </div>
+
+        <!-- Modal for Insights -->
+        <div id="modalOverlay" class="modal-overlay" style="display: none;" onclick="closeModal()"></div>
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-header">
+                <h2 id="modalTitle">Details</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-controls">
+                    <input type="text" id="modalSearch" placeholder="Search records..." class="search-input" onkeyup="filterModalTable()">
+                    <button type="button" class="btn-export btn-excel" onclick="prepareExportModalData()">
+                        📊 Export This View
+                    </button>
+                </div>
+                <div class="modal-table-wrapper">
+                    <table id="modalTable" class="modal-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="modalPagination" class="modal-pagination"></div>
+                <div class="modal-stats" id="modalStats">Showing records</div>
+            </div>
+        </div>
+
+        <!-- Export Options Modal -->
+        <div id="exportModalOverlay" class="modal-overlay" style="display: none;" onclick="closeExportModal()"></div>
+        <div id="exportModal" class="modal" style="display: none;">
+            <div class="modal-header">
+                <h2>Export Options</h2>
+                <button class="modal-close" onclick="closeExportModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="exportViewInfo" style="background: #f0f9ff; border-left: 4px solid #005C8C; padding: 12px 15px; margin-bottom: 20px; border-radius: 4px;">
+                    <p style="margin: 0; font-size: 13px; color: #666;"><strong>Current Selection:</strong> <span id="exportViewLabel">All Records</span></p>
+                </div>
+                <p style="margin-bottom: 20px; font-size: 15px;">
+                    You have <strong id="exportTotalCount">100</strong> total record(s) in this view to export. Choose what you want to export:
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <button type="button" class="btn-primary" onclick="exportModalDataConfirmed('preview')" style="padding: 12px 20px; text-align: left;">
+                        <strong>📋 Export Preview Only</strong>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; font-weight: normal; color: #666;">Export the first 100 records shown in preview</p>
+                    </button>
+                    <button type="button" class="btn-primary" onclick="exportModalDataConfirmed('all')" style="padding: 12px 20px; text-align: left;">
+                        <strong>📊 Export All Data</strong>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; font-weight: normal; color: #666;">Export all <span id="exportAllCount">100</span> record(s) at once</p>
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="closeExportModal()" style="padding: 12px 20px;">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Data Comparison Tool © 2026 | Compare SAP and SFDC data with precision</p>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="comparison-script.js"></script>
+</body>
+</html>

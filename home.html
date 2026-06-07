@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#005C8C">
+    <title>Data Comparison Tool - Select Module</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="home-page">
+    <div class="container">
+        <!-- Header -->
+        <header class="header home-header">
+            <div class="header-content">
+                <h1>Data Comparison Tool</h1>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content home-main">
+            <!-- Introduction Section -->
+            <div class="intro-section">
+                <div class="intro-card">
+                    <h2>Compare Your Data Across Systems</h2>
+                    <p>Upload CSV files from SAP and Salesforce (SFDC) to identify matching records, discrepancies, and missing data.</p>
+                    <div class="intro-features">
+                        <div class="feature">
+                            <span class="feature-icon">✅</span>
+                            <span>Record Matching</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📊</span>
+                            <span>Field Comparison</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📈</span>
+                            <span>Match Analytics</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📥</span>
+                            <span>Export Results</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module Selection Section -->
+            <section class="modules-section">
+                <h2 class="section-title">Select a Module to Compare</h2>
+                <div class="modules-grid">
+                    <!-- Quotation Header -->
+                    <div class="module-card" onclick="navigateToComparison('quotation_header')">
+                        <div class="module-icon">📝</div>
+                        <h3>Quotation Header</h3>
+                        <p>Compare quotation header records between SAP and SFDC</p>
+                        <div class="module-meta">
+                            <span class="meta-badge">Key: Quotation_ID</span>
+                        </div>
+                        <div class="module-arrow">→</div>
+                    </div>
+
+                    <!-- Quotation Line -->
+                    <div class="module-card" onclick="navigateToComparison('quotation_line')">
+                        <div class="module-icon">📋</div>
+                        <h3>Quotation Line</h3>
+                        <p>Compare quotation line items between SAP and SFDC</p>
+                        <div class="module-meta">
+                            <span class="meta-badge">Key: Line_ID</span>
+                        </div>
+                        <div class="module-arrow">→</div>
+                    </div>
+
+                    <!-- Order Header -->
+                    <div class="module-card" onclick="navigateToComparison('order_header')">
+                        <div class="module-icon">📦</div>
+                        <h3>Order Header</h3>
+                        <p>Compare order header records between SAP and SFDC</p>
+                        <div class="module-meta">
+                            <span class="meta-badge">Key: Order_ID</span>
+                        </div>
+                        <div class="module-arrow">→</div>
+                    </div>
+
+                    <!-- Order Line -->
+                    <div class="module-card" onclick="navigateToComparison('order_line')">
+                        <div class="module-icon">🛒</div>
+                        <h3>Order Line</h3>
+                        <p>Compare order line items between SAP and SFDC</p>
+                        <div class="module-meta">
+                            <span class="meta-badge">Key: Item_ID</span>
+                        </div>
+                        <div class="module-arrow">→</div>
+                    </div>
+
+                    <!-- Invoice Header -->
+                    <div class="module-card" onclick="navigateToComparison('invoice_header')">
+                        <div class="module-icon">💰</div>
+                        <h3>Invoice Header</h3>
+                        <p>Compare invoice header records between SAP and SFDC</p>
+                        <div class="module-meta">
+                            <span class="meta-badge">Key: Invoice_ID</span>
+                        </div>
+                        <div class="module-arrow">→</div>
+                    </div>
+
+                    <!-- Invoice Line -->
+                    <div class="module-card" onclick="navigateToComparison('invoice_line')">
+                        <div class="module-icon">📄</div>
+                        <h3>Invoice Line</h3>
+                        <p>Compare invoice line items between SAP and SFDC</p>
+                        <div class="module-meta">
+                            <span class="meta-badge">Key: Line_No</span>
+                        </div>
+                        <div class="module-arrow">→</div>
+                    </div>
+
+                    <!-- Dispatch Details -->
+                    <div class="module-card" onclick="navigateToComparison('dispatch_details')">
+                        <div class="module-icon">🚚</div>
+                        <h3>Dispatch Details</h3>
+                        <p>Compare dispatch records between SAP and SFDC</p>
+                        <div class="module-meta">
+                            <span class="meta-badge">Key: Dispatch_ID</span>
+                        </div>
+                        <div class="module-arrow">→</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Info Section -->
+            <section class="info-section">
+                <div class="info-box">
+                    <h3>📌 How to Use</h3>
+                    <ol>
+                        <li>Select a module from the cards above</li>
+                        <li>Upload your SAP CSV file</li>
+                        <li>Upload your SFDC CSV file</li>
+                        <li>Select the key column for matching</li>
+                        <li>Click "Compare" to see the results</li>
+                        <li>Analyze the comparison report and export if needed</li>
+                    </ol>
+                </div>
+                <div class="info-box">
+                    <h3>💡 Tips</h3>
+                    <ul>
+                        <li>Ensure your CSV files have matching column names unless using Dispatch Details, which supports field mapping</li>
+                        <li>The key column is crucial for accurate matching</li>
+                        <li>Use the summary cards to understand data quality</li>
+                        <li>Export results for further analysis or sharing</li>
+                        <li>Green highlights indicate matches, red shows mismatches</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Data Comparison Tool © 2026 | Compare SAP and SFDC data with precision</p>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="home-script.js"></script>
+</body>
+</html>
